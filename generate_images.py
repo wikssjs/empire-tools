@@ -4,7 +4,7 @@ Saves as JPEG in dist_{niche}/img/hero-N.jpg and updates config use_local=true.
 """
 import json, os, base64, urllib.request, urllib.error, time, sys
 
-GEMINI_KEY = "AIzaSyCSTSlGdpD9wLN93_fe2GYVRFnluJ4uoz8"
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 IMAGEN_URL  = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict?key={GEMINI_KEY}"
 FLASH_URL   = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key={GEMINI_KEY}"
 

@@ -16,7 +16,7 @@ import anthropic
 
 BASE = Path(__file__).parent.parent
 
-GEMINI_KEY = "AIzaSyCSTSlGdpD9wLN93_fe2GYVRFnluJ4uoz8"
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_KEY}"
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_KEY = os.environ.get("OPENAI_API_KEY", "")

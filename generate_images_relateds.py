@@ -5,7 +5,7 @@ Usage: python generate_images_relateds.py
 """
 import os, base64, json, time, sys, urllib.request, urllib.error
 
-GEMINI_KEY = "AIzaSyCSTSlGdpD9wLN93_fe2GYVRFnluJ4uoz8"
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 FLASH_URL  = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key={GEMINI_KEY}"
 BASE       = r"C:/Users/bellj/OneDrive/Desktop/Programmatic seo/Sites_relateds"
 COUNT      = 100  # images per niche

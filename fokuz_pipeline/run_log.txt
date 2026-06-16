@@ -1,0 +1,60 @@
+
+=======================================================
+  FOKUZ PIPELINE
+  Sujet : reparation fondation maison Quebec prix
+  2026-06-15 00:04
+=======================================================
+
+──────────────────────────────────────────────────
+[Phase 1] Research Perplexity Sonar Pro
+──────────────────────────────────────────────────
+  [1/5] reparation fondation maison Quebec prix prix marché Québec 2026 par ré...
+     → 10 sources trouvées
+  [2/5] reparation fondation maison Quebec prix erreurs courantes propriétaire...
+     → 7 sources trouvées
+  [3/5] reparation fondation maison Quebec prix réglementation RBQ CCQ obligat...
+     → 9 sources trouvées
+  [4/5] reparation fondation maison Quebec prix arnaques fraudeurs signes aver...
+     → 7 sources trouvées
+  [5/5] reparation fondation maison Quebec prix comment choisir entrepreneur c...
+     → 8 sources trouvées
+
+  Corpus total: 15189 chars | 41 sources
+
+──────────────────────────────────────────────────
+[Phase 2] Synthesis + Angle (gpt-5.4-nano)
+──────────────────────────────────────────────────
+  Angle: Comparer par poste (fissures, étanchéité, drain, reprise) et ajouter une fourche
+  Insight: Au Québec, les coûts de réparation de fondation varient fortement selon fissures
+
+──────────────────────────────────────────────────
+[Phase 3] Génération prompt optimal (gpt-5.4-mini)
+──────────────────────────────────────────────────
+  Prompt généré: 3770 chars
+
+──────────────────────────────────────────────────
+[Phase 4A] Rédaction Claude Sonnet (claude-sonnet-4-6)
+──────────────────────────────────────────────────
+  OK 2063 mots en 85.0s
+
+──────────────────────────────────────────────────
+[Phase 4B] Redaction GPT-5.4 (gpt-5.4)
+──────────────────────────────────────────────────
+  OK 2609 mots en 48.9s
+
+──────────────────────────────────────────────────
+[Phase 5] Scoring (claude-haiku-4-5-20251001)
+──────────────────────────────────────────────────
+  Scoring Claude Sonnet 4.6 (2063 mots)...
+  Claude Sonnet 4.6: 81/100
+  Scoring GPT-5.5 (2609 mots)...
+  GPT-5.5: 76/100
+
+=======================================================
+  TERMINÉ en 205s
+  🏆 Gagnant : Claude Sonnet 4.6
+  Claude Sonnet : 81/100 (2063 mots, 85s)
+  GPT-5.5       : 76/100 (2609 mots, 49s)
+  Résultats     : C:\Users\bellj\OneDrive\Desktop\Programmatic seo\Empire-PSEO\tools\fokuz_pipeline\results\20260615_000752_reparation-fondation-maison-quebec-prix
+=======================================================
+

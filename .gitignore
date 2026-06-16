@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+fokuz_pipeline/.env
+fokuz_pipeline/results/
+comparison_cache.json
+comparison_output.html
+*.html
+result_*.txt

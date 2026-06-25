@@ -7,14 +7,9 @@ Usage: python tools/compare_csv_vs_dashboard.py
 import csv, json, urllib.request, urllib.parse, re, os
 from datetime import date
 
-CSV_PATH     = 'Liste_des_projets_1781117948584.csv'
+CSV_PATH     = 'Liste_des_projets_1782340049268.csv'
 COMMISSION   = 0.40
 BASE_URL     = 'https://client.soumissionrenovation.ca/fr/referrals_reporting'
-
-# ── Session cookie (copier depuis navigateur : F12 → Network → cookie header) ─
-# Ouvrir https://client.soumissionrenovation.ca, F12, onglet Network,
-# cliquer n'importe quelle requete → Headers → Request Headers → cookie
-COOKIE = os.environ.get('SR_COOKIE', '')
 
 NICHE_MAP = {
     'Toiture - Non-métallique (ex-Bardeaux)': 'toiture',
@@ -76,7 +71,6 @@ def fetch_dashboard(start: str, end: str) -> dict:
     })
     url = f'{BASE_URL}?{params}'
     req = urllib.request.Request(url, headers={
-        'Cookie': COOKIE,
         'User-Agent': 'Mozilla/5.0',
         'Accept': 'text/html',
     })
@@ -93,18 +87,18 @@ def fetch_dashboard(start: str, end: str) -> dict:
     for row in rows:
         cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
         cells = [re.sub(r'<[^>]+>', '', c).strip() for c in cells]
-        if len(cells) >= 7:
+        if len(cells) >= 12:
             try:
-                proj_id = int(cells[6]) if cells[6].isdigit() else None
+                proj_id = int(cells[1]) if cells[1].isdigit() else None
                 if not proj_id:
                     continue
-                rev_str = cells[2].replace('$', '').replace(',', '').strip()
+                rev_str = cells[7].replace('$', '').replace(',', '.').replace('\xa0', '').strip()
                 rev = float(rev_str) if rev_str else 0.0
                 result[proj_id] = {
                     'date':    cells[0][:10],
-                    'service': cells[7] if len(cells) > 7 else '',
+                    'service': cells[11],
                     'revenu':  rev,
-                    'region':  cells[11] if len(cells) > 11 else '',
+                    'region':  cells[5],
                 }
             except (ValueError, IndexError):
                 continue
@@ -150,63 +144,19 @@ def main():
     print(f'{"="*90}')
     print(f'  CSV: {len(csv_data)} projets total')
 
-    # ── Fetch dashboard ───────────────────────────────────────────────────────
-    if not COOKIE:
-        print('\n  [!] COOKIE manquant — utilise les donnees embarquees (voir note ci-dessous)')
-        print('  Pour activer le fetch live: set SR_COOKIE="ton_cookie" avant de lancer')
-        dashboard_data = {}
-    else:
-        print(f'  Fetching dashboard {date_min} -> {date_max}...')
-        # Fetcher par blocs de 7 jours pour eviter la troncature
-        from datetime import datetime, timedelta
-        dashboard_data = {}
-        d = datetime.strptime(date_min, '%Y-%m-%d')
-        end_d = datetime.strptime(date_max, '%Y-%m-%d')
-        while d <= end_d:
-            chunk_end = min(d + timedelta(days=6), end_d)
-            chunk = fetch_dashboard(
-                d.strftime('%Y/%m/%d'),
-                chunk_end.strftime('%Y/%m/%d')
-            )
-            dashboard_data.update(chunk)
-            d = chunk_end + timedelta(days=1)
-        print(f'  Dashboard: {len(dashboard_data)} projets fetches')
-
-    # ── Donnees dashboard embedees (fallback si pas de cookie) ───────────────
-    # Generees par WebFetch le 2026-06-08
-    # Fetche le 2026-06-09 — montants mis a jour
-    EMBEDDED_DASHBOARD = {
-        # Juin 1
-        1012145: {'date':'2026-06-01','service':'Revêtement extérieur','revenu':15.83,'region':'Lanaudière'},
-        1012375: {'date':'2026-06-01','service':'Calfeutrage','revenu':70.10,'region':'Laurentides'},
-        1012447: {'date':'2026-06-01','service':'Designer Intérieur','revenu':81.83,'region':'Pincourt'},
-        1012507: {'date':'2026-06-01','service':'Gouttières','revenu':5.03,'region':'Saint-Hyacinthe Est'},
-        1012653: {'date':'2026-06-01','service':'Électricien','revenu':15.19,'region':'Repentigny'},
-        # Juin 2
-        1013011: {'date':'2026-06-02','service':'Électricien','revenu':19.00,'region':'Saint-Didace'},
-        1013055: {'date':'2026-06-02','service':'Peinture - Intérieur','revenu':38.83,'region':'Capitale-Nationale'},
-        1013378: {'date':'2026-06-02','service':'Gouttières','revenu':72.30,'region':'Lanaudière'},
-        # Juin 4
-        1014598: {'date':'2026-06-04','service':'Isolation - Entre-toît','revenu':111.86,'region':'Québec'},
-        1014603: {'date':'2026-06-04','service':'Climatisation','revenu':73.94,'region':'Saint-Donat'},
-        1014827: {'date':'2026-06-04','service':'Gouttières','revenu':10.38,'region':'Estrie'},
-        1015169: {'date':'2026-06-04','service':'Calfeutrage','revenu':18.00,'region':'Lanaudière'},
-        # Juin 5
-        1015674: {'date':'2026-06-05','service':'Fondation - Fissures','revenu':19.27,'region':'Montérégie'},
-        # Juin 6
-        1016028: {'date':'2026-06-06','service':'Gouttières','revenu':51.97,'region':'Laurentides'},
-        1016067: {'date':'2026-06-06','service':'Aménagement Paysager - Pavage','revenu':37.45,'region':'Capitale-Nationale'},
-        1016110: {'date':'2026-06-06','service':'Fondation - Fissures','revenu':77.84,'region':'Montérégie'},
-        # Juin 7
-        1016601: {'date':'2026-06-07','service':'Décontamination','revenu':25.10,'region':'Estrie'},
-        # Juin 8
-        1016873: {'date':'2026-06-08','service':'Calfeutrage','revenu':18.00,'region':'Saint-Jean-sur-Richelieu Est'},
-        1017139: {'date':'2026-06-08','service':'Gouttières','revenu':10.98,'region':'Wotton'},
-        1017162: {'date':'2026-06-08','service':'Gouttières','revenu':13.26,'region':'Sainte-Foy-Sillery-Cap-Rouge'},
-    }
-
-    if not dashboard_data:
-        dashboard_data = EMBEDDED_DASHBOARD
+    # ── Fetch dashboard jour par jour ────────────────────────────────────────
+    from datetime import datetime, timedelta
+    dashboard_data = {}
+    d = datetime.strptime(date_min, '%Y-%m-%d')
+    end_d = datetime.strptime('2026-06-24', '%Y-%m-%d')
+    while d <= end_d:
+        day_str = d.strftime('%Y-%m-%d')
+        chunk = fetch_dashboard(d.strftime('%Y/%m/%d'), d.strftime('%Y/%m/%d'))
+        if chunk:
+            print(f'  {day_str}: {len(chunk)} projets')
+        dashboard_data.update(chunk)
+        d += timedelta(days=1)
+    print(f'  Dashboard total: {len(dashboard_data)} projets fetches')
 
     # ── Comparaison ───────────────────────────────────────────────────────────
     csv_ids   = set(csv_data.keys())
